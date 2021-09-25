@@ -1,0 +1,21 @@
+﻿@model MessagingApp.Data.Message
+@{
+    ViewData["Title"] = "Update Message";
+}
+
+<form method="post" asp-action="Edit" asp-controller="Home">
+    <input type="text" asp-for="Id" hidden />
+
+    <div class="row m-2">
+        <div class="col-12">
+            <h3>Edit message record.</h3>
+        </div>
+        <div class="col-md-12 mr-2">
+            <textarea maxlength="160" rows="5" class="bg-dark text-white form-control" asp-for="MessagDescription"></textarea>
+        </div>
+        <div class="col-md-12 text-right mt-3">
+            <button type="submit" class="btn btn-info">Update</button>
+        </div>
+    </div>
+</form>
+

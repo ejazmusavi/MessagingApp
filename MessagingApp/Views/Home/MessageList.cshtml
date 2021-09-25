@@ -1,0 +1,92 @@
+﻿@model List<MessagingApp.Data.Message>
+@{
+    ViewData["Title"] = "MessageList";
+}
+
+<div class="form-group">
+    <div class="col-12 text-right">
+        <a asp-action="CreateMessage" class="btn btn-info">New Message</a>
+    </div>
+    <div class="col-md-12">
+        <table class="table table-condensed table-hover table-dark">
+            <tr>
+                <th>
+                    Sno
+                </th>
+                <th>
+                    Message Description
+                </th>
+                <th>
+                    Created Date
+                </th>
+                <th>
+                    Create By
+                </th>
+                <th>Actions</th>
+            </tr>
+            @{
+                //To make unique Id
+                int i = 1;
+                foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td>@i</td>
+                        <td>
+                            @Html.DisplayFor(o => item.MessagDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(o => item.CreatedOn)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(o => item.Useer.UserName)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success">Edit</a>
+                            <button onclick="deleteData(@item.Id)" class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+
+                    i++;
+                }
+            }
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    function edit(id) {
+        window.location = '/Home/Edit?id=' + id;
+    }
+
+    function deleteData(id) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover data!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            customClass: 'swal-wide',
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "Yes, delete it!",
+            confirmButtonColor: "#EC6C62"
+        })
+            .then((willDelete) => {
+                if (willDelete.isConfirmed) {
+                    $.post('/Home/Delete/' + id, function (response) {
+                        if (response.status) {
+                            location.reload();
+
+                        }
+                        else {
+                            Swal.fire(response.message, {
+                                icon: "error",
+                            });
+                        }
+                    })
+                }
+            });
+    }
+
+</script>
+

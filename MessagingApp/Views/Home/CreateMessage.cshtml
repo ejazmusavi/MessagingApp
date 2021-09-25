@@ -1,0 +1,30 @@
+﻿@model MessagingApp.Data.Message
+@{
+    ViewData["Title"] = "Create Message";
+}
+
+@if (ViewBag.link == null)
+{<form method="post" asp-action="CreateMessage" asp-controller="Home">
+
+        <div class="row m-2">
+            <div class="col-12">
+                <h3>Create a new message record.</h3>
+            </div>
+            <div class="col-md-12 mr-2">
+                <textarea maxlength="160" rows="5" class="bg-dark text-white form-control" asp-for="MessagDescription"></textarea>
+            </div>
+            <div class="col-md-12 text-right mt-3">
+                <button type="submit" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+
+    <div class="text-center">
+        <h1 class="display-4">Message Saved Successfully.</h1>
+        <p>Use this (link) <b>@ViewBag.link</b> with this password <b>@ViewBag.Password </b>to access the message</p>
+        <p>Click <a asp-action="CreateMessage">here</a> to write your message.</p>
+    </div>
+}

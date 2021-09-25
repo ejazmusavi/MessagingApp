@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="row">
+    <div class="col-12 ">
+        <div class="row m-2">
+
+            <div class="col-12 col-md-3 mx-auto">
+                <h5>Enter Password.</h5>
+                <input id="password" type="password" class="bg-dark text-white form-control" />
+            </div>
+            <div class="w-100"></div>
+            <div class="col-12 text-right my-3  col-md-3 mx-auto">
+                <button id="btnread" type="button" class="btn btn-info">Continue</button>
+            </div>
+            <div class="col-12 ">
+                <p class="alert alert-danger" id="error" style="display:none"></p>
+            </div> 
+            <div class="col-12" id="message" style="display:none" >
+                <textarea  maxlength="160" rows="5" class="bg-dark text-white form-control" readonly></textarea>
+                <p>
+                    @if (User.Identity.IsAuthenticated)
+                    {<a asp-action="Edit" asp-route-id="@ViewBag.id" class="btn btn-success">Edit</a>
+                    <button onclick="deleteData(@ViewBag.id)" class="btn btn-danger">Delete</button>
+                    }
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+    $('#btnread').on('click', function () {
+        $('#message textarea').val('');
+        $('#message').hide();
+        $('#error').html('').hide();
+
+        let pwd = $('#password').val();
+        if (pwd == '') {
+            Swal.fire({
+                title: "Invalid password.",
+                icon: "error",
+            });
+            return false;
+        }
+        $.post('/Home/Read', { id: '@ViewBag.id', password: pwd }, function (response) {
+            if (response.status) {
+                $('#message').show();
+                $('#message textarea').val(response.message.text);
+            }
+            else {
+                $('#error').html(response.message).show();
+            }
+        });
+    });
+
+    function deleteData(id) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover data!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            customClass: 'swal-wide',
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "Yes, delete it!",
+            confirmButtonColor: "#EC6C62"
+        })
+            .then((willDelete) => {
+                if (willDelete.isConfirmed) {
+                    $.post('/Home/Delete/' + id, function (response) {
+                        if (response.status) {
+                            location.reload();
+
+                        }
+                        else {
+                            Swal.fire(response.message, {
+                                icon: "error",
+                            });
+                        }
+                    })
+                }
+            });
+    }
+    </script>
+}
